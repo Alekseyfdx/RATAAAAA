@@ -5,7 +5,187 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover" />
   <title>✈️ תיאוריה לטייס — תרגול שאלות</title>
   <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;700&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="styles.css" />
+  <style>
+:root{
+  --bg1:#0f172a; --bg2:#1e293b;
+  --text:#eef2ff; --muted:#cbd5e1;
+  --primary:#3b82f6; --primary-600:#2563eb;
+  --outline:#334155; --success:#10b981;
+  --card-bg: rgba(255,255,255,.08);
+  --card-border: rgba(255,255,255,.18);
+  --shadow: 0 15px 35px rgba(0,0,0,.25);
+  --radius:16px;
+}
+*{box-sizing:border-box}
+html,body{height:100%}
+body{
+  margin:0; color:var(--text);
+  font-family:'Rubik',system-ui,-apple-system,'Segoe UI',Arial,sans-serif;
+  background:
+    radial-gradient(1200px 800px at 10% 0%, rgba(110,36,210,.35), transparent 60%),
+    radial-gradient(1000px 800px at 100% 100%, rgba(14,165,233,.35), transparent 60%),
+    linear-gradient(180deg, var(--bg1), var(--bg2));
+}
+.container{ width:min(1080px, 92%); margin-inline:auto }
+
+/* Header */
+.app-header{
+  position:sticky; top:0; z-index:10;
+  backdrop-filter:saturate(140%) blur(10px);
+  background:linear-gradient(to bottom, rgba(15,23,42,.85), rgba(15,23,42,.6));
+  border-bottom:1px solid var(--outline);
+}
+.header-content{ display:flex; align-items:center; justify-content:space-between; padding:14px 0 }
+.brand{ display:flex; gap:10px; align-items:center }
+.brand-logo{ font-size:1.25rem }
+.brand-text{ font-weight:700; letter-spacing:.3px }
+.counter{ color:var(--muted); font-size:.95rem }
+
+/* Main */
+.app-main{ padding:24px 0 36px; display:flex; flex-direction:column; gap:16px }
+
+/* Search */
+.search{ display:flex; gap:10px }
+.search input{
+  flex:1; background:rgba(255,255,255,.06); color:var(--text);
+  border:1px solid var(--outline); border-radius:12px; padding:12px 14px;
+}
+.search input::placeholder{ color:#94a3b8 }
+.btn{
+  border:0; border-radius:12px; padding:12px 18px; cursor:pointer; font-weight:700;
+  transition:transform .08s ease, box-shadow .2s ease, background .2s ease, filter .2s ease;
+}
+.btn:active{ transform:translateY(1px) }
+.btn-primary{ background:linear-gradient(135deg,var(--primary),var(--primary-600)); color:#fff; box-shadow:0 8px 20px rgba(37,99,235,.35) }
+.btn-outline{ background:transparent; color:#fff; border:1px solid var(--outline) }
+
+/* Card */
+.card{ border-radius:var(--radius); padding:22px 18px; box-shadow:var(--shadow) }
+.glass{ background:var(--card-bg); border:1px solid var(--card-border); backdrop-filter: blur(14px) saturate(140%) }
+.question{ font-size:1.35rem; line-height:1.6; margin:0 0 14px }
+.answer{
+  background:rgba(255,255,255,.07); border:1px dashed rgba(255,255,255,.25);
+  border-radius:14px; padding:14px 12px; color:#e2e8f0; box-shadow: inset 0 1px 6px rgba(0,0,0,.12);
+}
+
+/* Explanation Button */
+.explanation-btn {
+  width: 100%;
+  background: linear-gradient(135deg, #10b981, #059669);
+  color: white;
+  border: none;
+  border-radius: 12px;
+  padding: 14px 20px;
+  font-size: 1rem;
+  font-weight: 700;
+  cursor: pointer;
+  margin-top: 16px;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3);
+}
+
+.explanation-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(16, 185, 129, 0.4);
+}
+
+.explanation-btn:active {
+  transform: translateY(0);
+}
+
+/* Explanation Section */
+.explanation {
+  margin-top: 16px;
+  background: rgba(16, 185, 129, 0.1);
+  border: 1px solid rgba(16, 185, 129, 0.3);
+  border-radius: 12px;
+  padding: 0;
+  overflow: hidden;
+  transition: all 0.4s ease;
+  max-height: 0;
+  opacity: 0;
+}
+
+.explanation.show {
+  max-height: 500px;
+  opacity: 1;
+  padding: 16px;
+}
+
+.explanation-content {
+  color: #e2e8f0;
+  line-height: 1.6;
+}
+
+.explanation-text {
+  font-size: 1rem;
+  margin-bottom: 12px;
+}
+
+.explanation-source {
+  font-size: 0.9rem;
+  color: #94a3b8;
+  font-style: italic;
+  border-top: 1px solid rgba(255,255,255,0.1);
+  padding-top: 8px;
+}
+
+/* Nav + progress */
+.nav-row{ display:flex; gap:12px }
+.nav-row .btn{ flex:1 }
+.progress-wrap{
+  width:100%; height:6px; background:rgba(255,255,255,.1);
+  border-radius:100px; overflow:hidden; border:1px solid rgba(255,255,255,.12)
+}
+.progress{ height:100%; background:linear-gradient(90deg, var(--success), #22d3ee); width:0; transition:width .35s cubic-bezier(.2,.7,.25,1) }
+
+/* Footer */
+.app-footer{ border-top:1px solid var(--outline); padding:18px 0; background:linear-gradient(to top, rgba(15,23,42,.9), rgba(15,23,42,.6)) }
+.app-footer p{ margin:0; color:#9ca3af }
+
+/* Chat FAB */
+.fab{
+  position:fixed; right:22px; bottom:22px; z-index:50;
+  width:56px; height:56px; border-radius:50%;
+  display:grid; place-items:center;
+  background:linear-gradient(135deg,var(--primary),var(--primary-600)); color:#fff;
+  border:0; cursor:pointer; box-shadow:0 14px 30px rgba(37,99,235,.35);
+  font-size:1.35rem;
+}
+
+/* Chat window */
+.chat{
+  position:fixed; right:22px; bottom:92px; z-index:60;
+  width:380px; max-height:min(70vh, 620px);
+  display:none; flex-direction:column; overflow:hidden;
+  border-radius:16px; box-shadow:var(--shadow);
+  background:linear-gradient(180deg, rgba(17,24,39,.98), rgba(17,24,39,.92));
+  border:1px solid var(--card-border);
+}
+.chat-head{ display:flex; align-items:center; justify-content:space-between; padding:10px 12px; border-bottom:1px solid var(--outline) }
+.chat-title{ font-weight:700 }
+.icon-btn{ background:transparent; color:#e5e7eb; border:0; font-size:1.2rem; cursor:pointer }
+.chat-body{ padding:12px; overflow:auto; display:flex; flex-direction:column; gap:8px }
+.msg{ display:flex; gap:8px; align-items:flex-start }
+.avatar{ width:26px; height:26px; display:grid; place-items:center; background:#0b1220; border:1px solid var(--outline); border-radius:50% }
+.bubble{ background:rgba(255,255,255,.08); border:1px solid rgba(255,255,255,.15); padding:8px 10px; border-radius:12px }
+.msg.user .bubble{ background:rgba(59,130,246,.15); border-color:rgba(59,130,246,.35) }
+.chat-input{ display:flex; gap:8px; padding:10px 12px; border-top:1px solid var(--outline); background:rgba(2,6,23,.6) }
+.chat-input input{ flex:1; background:rgba(255,255,255,.06); color:#fff; border:1px solid var(--outline); border-radius:10px; padding:10px 12px }
+.btn-send{ padding:10px 14px }
+.chat-loading{ padding:8px 12px; color:#cbd5e1; border-top:1px dashed var(--outline) }
+
+/* Mobile */
+@media (max-width: 640px){
+  .container{ width:min(100%, 94%) }
+  .search{ flex-direction:column }
+  .nav-row{ flex-direction:column }
+  .card{ padding:18px 14px }
+  .question{ font-size:1.15rem }
+  .chat{ width:92vw; right:4vw; bottom:86px }
+  .fab{ right:14px; bottom:14px }
+}
+  </style>
 </head>
 <body>
   <header class="app-header">
@@ -32,6 +212,17 @@
       <div id="questionText" class="question"></div>
       <div id="answerCard" class="answer">
         <div id="answerText"></div>
+      </div>
+      
+      <!-- כפתור הסבר -->
+      <button id="explanationBtn" class="explanation-btn">הסבר</button>
+      
+      <!-- אזור ההסבר -->
+      <div id="explanation" class="explanation">
+        <div class="explanation-content">
+          <div id="explanationText" class="explanation-text"></div>
+          <div id="explanationSource" class="explanation-source"></div>
+        </div>
       </div>
     </section>
 
@@ -75,6 +266,242 @@
     <div id="loadingSpinner" class="chat-loading" hidden>טוען…</div>
   </div>
 
-  <script src="script.js"></script>
+  <script>
+// === מקור נתונים (JSON: {questions:[...]} או מערך ישיר) ===
+const DATA_URL = 'questions.json';
+
+// ⚠️ מפתח ציבורי: בצד-לקוח הוא גלוי. לפרודקשן – מומלץ פרוקסי-שרת.
+const API_KEY = 'AIzaSyBx3oPlQMWCjYglP0ENvWK_7uGJbh6aYqs';
+const GEMINI_ENDPOINT = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${API_KEY}`;
+
+// DOM
+const questionText = document.getElementById('questionText');
+const answerText   = document.getElementById('answerText');
+const prevBtn      = document.getElementById('prevBtn');
+const nextBtn      = document.getElementById('nextBtn');
+const progressBar  = document.getElementById('progressBar');
+const questionCounter = document.getElementById('questionCounter');
+const searchInput  = document.getElementById('searchInput');
+const searchBtn    = document.getElementById('searchBtn');
+
+// Explanation elements
+const explanationBtn = document.getElementById('explanationBtn');
+const explanationDiv = document.getElementById('explanation');
+const explanationText = document.getElementById('explanationText');
+const explanationSource = document.getElementById('explanationSource');
+
+// Chat
+const fabBtn       = document.getElementById('chatBtn');
+const chatWindow   = document.getElementById('chatWindow');
+const chatClose    = document.getElementById('chatClose');
+const chatMessages = document.getElementById('chatMessages');
+const chatInput    = document.getElementById('chatInput');
+const chatSend     = document.getElementById('chatSend');
+const loadingSpinner = document.getElementById('loadingSpinner');
+
+// State
+let allQuestions = [];
+let filtered = [];
+let index = 0;
+const STORAGE_INDEX = 'pilot_theory_index';
+const STORAGE_TERM  = 'pilot_theory_term';
+
+// == Load
+async function loadQuestions(){
+  try{
+    const res = await fetch(DATA_URL);
+    const data = await res.json();
+    const arr = Array.isArray(data) ? data : (data?.questions ?? []);
+    if (!Array.isArray(arr) || !arr.length) throw new Error('questions.json לא במבנה הנדרש');
+
+    allQuestions = arr.map(q => ({
+      id: Number(q.id),
+      question: String(q.question ?? '').trim(),
+      answer: String(q.answer ?? '').trim(),
+      explanation: String(q.explanation ?? '').trim(),
+      source: String(q.source ?? '').trim()
+    }));
+
+    const savedTerm = localStorage.getItem(STORAGE_TERM) || '';
+    filtered = savedTerm ? runFilter(savedTerm) : allQuestions;
+    if (savedTerm) searchInput.value = savedTerm;
+
+    const savedIdx = Number(localStorage.getItem(STORAGE_INDEX));
+    index = Number.isFinite(savedIdx) && savedIdx >= 0 && savedIdx < filtered.length ? savedIdx : 0;
+
+    render();
+  }catch(err){
+    console.error(err);
+    questionText.textContent = 'שגיאה בטעינת השאלות (questions.json).';
+  }
+}
+
+// == Render
+function render(){
+  if (!filtered.length){
+    questionText.textContent = 'אין תוצאות.';
+    answerText.textContent = '';
+    hideExplanation();
+    updateProgress();
+    return;
+  }
+  const q = filtered[index];
+  questionText.textContent = q.question;
+  answerText.textContent   = q.answer;
+  
+  // Hide explanation when moving to new question
+  hideExplanation();
+  
+  updateProgress();
+  persist();
+}
+
+function updateProgress(){
+  const total = filtered.length;
+  const pos = total ? index + 1 : 0;
+  questionCounter.textContent = `שאלה ${pos} מתוך ${total}`;
+  progressBar.style.width = (total ? (pos/total*100) : 0) + '%';
+}
+
+function persist(){
+  localStorage.setItem(STORAGE_INDEX, String(index));
+  localStorage.setItem(STORAGE_TERM, searchInput.value.trim());
+}
+
+// == Explanation functions
+function toggleExplanation(){
+  if (explanationDiv.classList.contains('show')) {
+    hideExplanation();
+  } else {
+    showExplanation();
+  }
+}
+
+function showExplanation(){
+  if (!filtered.length) return;
+  
+  const q = filtered[index];
+  const explanation = q.explanation || 'אין הסבר זמין לשאלה זו.';
+  const source = q.source || '';
+  
+  explanationText.textContent = explanation;
+  explanationSource.textContent = source ? `מקור: ${source}` : '';
+  
+  explanationDiv.classList.add('show');
+  explanationBtn.textContent = 'הסתר הסבר';
+}
+
+function hideExplanation(){
+  explanationDiv.classList.remove('show');
+  explanationBtn.textContent = 'הסבר';
+}
+
+// == Actions
+function next(){ 
+  if(!filtered.length) return; 
+  index = (index + 1) % filtered.length; 
+  render(); 
+}
+
+function prev(){ 
+  if(!filtered.length) return; 
+  index = (index - 1 + filtered.length) % filtered.length; 
+  render(); 
+}
+
+function runFilter(term){
+  const t = term.trim().toLowerCase();
+  if (!t) return allQuestions;
+  return allQuestions.filter(q =>
+    q.question.toLowerCase().includes(t) ||
+    q.answer.toLowerCase().includes(t)
+  );
+}
+function runSearch(){ filtered = runFilter(searchInput.value); index = 0; render(); }
+
+// == Keyboard nav (לא מפריע להקלדה בשדות)
+document.addEventListener('keydown', (e) => {
+  const tag = (document.activeElement?.tagName) || '';
+  const typing = tag === 'INPUT' || tag === 'TEXTAREA';
+  if (typing) return;
+
+  if (e.key === 'ArrowRight' || e.key === 'Enter' || e.key === ' ') next();
+  if (e.key === 'ArrowLeft') prev();
+});
+
+// == Events
+nextBtn.addEventListener('click', next);
+prevBtn.addEventListener('click', prev);
+searchBtn.addEventListener('click', runSearch);
+searchInput.addEventListener('keydown', (e)=>{ if(e.key==='Enter') runSearch(); });
+explanationBtn.addEventListener('click', toggleExplanation);
+
+// == Chat helpers
+function addMsg(text, who='bot'){
+  const wrap = document.createElement('div');
+  wrap.className = 'msg ' + (who==='user' ? 'user' : 'bot');
+  const av = document.createElement('div'); av.className = 'avatar'; av.textContent = who==='user' ? '👤' : '🤖';
+  const bubble = document.createElement('div'); bubble.className = 'bubble'; bubble.textContent = text;
+  wrap.appendChild(av); wrap.appendChild(bubble);
+  chatMessages.appendChild(wrap);
+  chatMessages.scrollTop = chatMessages.scrollHeight;
+}
+
+// == Gemini: בוט חכם, זורם וענייני בלבד (חופשי לנושא)
+async function askGemini(prompt){
+  const system = [
+    'ענה בעברית טבעית וברורה על כל נושא.',
+    'ענייניות ראשונה: קצר כשאפשר, מפורט רק כשנדרש.',
+    'אם חסר מידע — בקש הבהרה קצרה (שאלה אחת) לפני תשובה.',
+    'אל תמציא עובדות; אם אינך בטוח, אמור שאינך בטוח.',
+    'השתמש בדוגמאות או סעיפים קצרים כשזה מבהיר.'
+  ].join(' ');
+
+  const body = { contents:[
+    { role:'user', parts:[{ text: system }] },
+    { role:'user', parts:[{ text: prompt }] }
+  ]};
+
+  const res = await fetch(GEMINI_ENDPOINT,{
+    method:'POST',
+    headers:{ 'Content-Type':'application/json' },
+    body: JSON.stringify(body)
+  });
+  if(!res.ok){
+    const t = await res.text().catch(()=> '');
+    throw new Error('שגיאה מה-Gemini: ' + res.status + ' ' + t);
+  }
+  const data = await res.json();
+  return data?.candidates?.[0]?.content?.parts?.[0]?.text || 'לא התקבלה תשובה.';
+}
+
+// == Chat open/close (FAB)
+function openChat(){ chatWindow.style.display = 'flex'; chatWindow.setAttribute('aria-hidden','false'); }
+function closeChat(){ chatWindow.style.display = 'none'; chatWindow.setAttribute('aria-hidden','true'); }
+fabBtn.addEventListener('click', openChat);
+chatClose.addEventListener('click', closeChat);
+
+// שליחה
+async function sendChat(){
+  const text = chatInput.value.trim();
+  if(!text) return;
+  addMsg(text,'user');
+  chatInput.value = '';
+  loadingSpinner.hidden = false;
+  try{
+    const reply = await askGemini(text);
+    addMsg(reply,'bot');
+  }catch(err){
+    addMsg(err.message || 'שגיאה.','bot');
+  }finally{
+    loadingSpinner.hidden = true;
+  }
+}
+chatSend.addEventListener('click', sendChat);
+chatInput.addEventListener('keydown',(e)=>{ if(e.key==='Enter') sendChat(); });
+
+// Start
+loadQuestions();
+  </script>
 </body>
 </html>
