@@ -1,0 +1,144 @@
+body {
+    font-family: 'Rubik', sans-serif;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    min-height: 100vh;
+    direction: rtl;
+    color: #222;
+}
+
+.app-header {
+    background-color: #1a365d;
+    color: #fff;
+    padding: 1rem;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.08);
+}
+
+.header-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.logo {
+    font-size: 1.3rem;
+    font-weight: bold;
+}
+
+.app-container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 2rem 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.controls-bar {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.search-input {
+    flex: 1;
+    padding: 0.7rem;
+    border-radius: 8px;
+    border: 1px solid #c3c3c3;
+    font-size: 1rem;
+}
+
+.search-btn {
+    padding: 0.7rem 1.5rem;
+    background: #2563eb;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+}
+
+.question-card {
+    background: #fff;
+    border-radius: 12px;
+    padding: 2rem;
+    box-shadow: 0 4px 16px rgba(30, 40, 70, 0.06);
+    text-align: center;
+}
+
+.question-text {
+    font-size: 1.3rem;
+    font-weight: 500;
+    min-height: 64px;
+}
+
+.toggle-answer-btn {
+    margin: 1rem 0 0.5rem 0;
+    background: #10b981;
+    color: #fff;
+    border: none;
+    border-radius: 999px;
+    padding: 0.7rem 2rem;
+    font-size: 1rem;
+    cursor: pointer;
+}
+
+.answer-card {
+    background: #f6f9fb;
+    border-radius: 8px;
+    padding: 1.2rem 0.8rem;
+    margin-top: 0.7rem;
+    font-size: 1.07rem;
+    color: #6b7280;
+    box-shadow: 0 1px 6px rgba(30, 40, 70, 0.08);
+}
+
+.navigation-buttons {
+    display: flex;
+    gap: 1rem;
+    justify-content: space-between;
+}
+
+.nav-btn {
+    flex: 1;
+    padding: 1rem 0;
+    background: #2563eb;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    font-size: 1rem;
+    cursor: pointer;
+    font-weight: bold;
+    transition: background 0.2s;
+}
+.nav-btn:hover {
+    background: #1a365d;
+}
+
+#randomBtn {
+    background: #f59e0b;
+}
+#randomBtn:hover {
+    background: #b45309;
+}
+
+.progress-bar-container {
+    width: 100%;
+    height: 7px;
+    background: #e5e7eb;
+    border-radius: 4px;
+    overflow: hidden;
+    margin-top: 12px;
+}
+.progress-bar {
+    height: 100%;
+    background: #10b981;
+    width: 0;
+    transition: width 0.3s;
+}
+
+.app-footer {
+    background: #1a365d;
+    color: #fff;
+    padding: 1rem;
+    text-align: center;
+}

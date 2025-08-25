@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>✈️ תיאוריה לטייס — תרגול שאלות</title>
+  <link rel="stylesheet" href="styles.css">
+  <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;700&display=swap" rel="stylesheet">
+</head>
+<body>
+  <header class="app-header">
+    <div class="header-content">
+      <div class="logo">✈️ תיאוריה לטייס</div>
+      <span id="questionCounter"></span>
+    </div>
+  </header>
+
+  <main class="app-container">
+    <!-- חיפוש -->
+    <div class="controls-bar">
+      <input id="searchInput" class="search-input" type="text" placeholder="חפש/י בשאלה או בתשובה...">
+      <button id="searchBtn" class="search-btn">חפש</button>
+    </div>
+
+    <!-- כרטיס שאלה/תשובה -->
+    <section class="question-card" aria-live="polite">
+      <div id="questionText" class="question-text"></div>
+      <div id="answerCard" class="answer-card">
+        <div id="answerText"></div>
+      </div>
+    </section>
+
+    <!-- ניווט -->
+    <div class="navigation-buttons">
+      <button id="prevBtn" class="nav-btn" title="חזרה (חץ שמאל)">קודם</button>
+      <button id="nextBtn" class="nav-btn" title="קדימה (חץ ימין)">שאלה הבאה</button>
+    </div>
+
+    <!-- התקדמות -->
+    <div class="progress-bar-container" role="progressbar" aria-valuemin="0" aria-valuemax="100">
+      <div id="progressBar" class="progress-bar"></div>
+    </div>
+  </main>
+
+  <footer class="app-footer">
+    <p>&copy; 2025 לימוד עצמי — RTL • JSON בלבד</p>
+  </footer>
+
+  <!-- צ'אט בוט חוקה (Gemini) -->
+  <button class="chat-btn" id="chatBtn" aria-label="פתח צ'אט">💬</button>
+  <div class="chat-window" id="chatWindow" aria-hidden="true">
+    <div class="chat-header">
+      <h3>בוט חוקה</h3>
+      <button class="chat-close" id="chatClose" aria-label="סגור">✕</button>
+    </div>
+    <div class="chat-messages" id="chatMessages">
+      <div class="chat-message bot-message">
+        <div class="message-avatar">🤖</div>
+        <div class="message-content">
+          שלום! שאל/י אותי שאלות בנושא חוקת אוויר בלבד ואענה בקצרה ובדיוק.
+        </div>
+      </div>
+    </div>
+    <div class="chat-input-row">
+      <input id="chatInput" type="text" placeholder="הקלד/י שאלה בחוקה...">
+      <button id="chatSend">שלח</button>
+    </div>
+    <div id="loadingSpinner" class="loading" style="display:none">טוען…</div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
