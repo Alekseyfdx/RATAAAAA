@@ -1,7 +1,7 @@
-// === מקור הנתונים (JSON פשוט: [{id,question,answer}])
+// === מקור נתונים (JSON: {questions:[...]} או מערך ישיר) ===
 const DATA_URL = 'questions.json';
 
-// ⚠️ API Key בצד-לקוח הוא גלוי. לפרודקשן רצוי פרוקסי-שרת.
+// ⚠️ מפתח ציבורי: בצד-לקוח הוא גלוי. לפרודקשן – מומלץ פרוקסי-שרת.
 const API_KEY = 'AIzaSyBx3oPlQMWCjYglP0ENvWK_7uGJbh6aYqs';
 const GEMINI_ENDPOINT = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${API_KEY}`;
 
@@ -12,7 +12,6 @@ const prevBtn      = document.getElementById('prevBtn');
 const nextBtn      = document.getElementById('nextBtn');
 const progressBar  = document.getElementById('progressBar');
 const questionCounter = document.getElementById('questionCounter');
-
 const searchInput  = document.getElementById('searchInput');
 const searchBtn    = document.getElementById('searchBtn');
 
@@ -29,24 +28,21 @@ const loadingSpinner = document.getElementById('loadingSpinner');
 let allQuestions = [];
 let filtered = [];
 let index = 0;
-
 const STORAGE_INDEX = 'pilot_theory_index';
 const STORAGE_TERM  = 'pilot_theory_term';
 
-// === Load
+// == Load
 async function loadQuestions(){
   try{
     const res = await fetch(DATA_URL);
     const data = await res.json();
-
-    // תמיכה בשני מבנים: {questions:[...]} או מערך ישירות
-    const arr = Array.isArray(data) ? data : (data && Array.isArray(data.questions) ? data.questions : []);
-    if (!arr.length) throw new Error('questions.json לא במבנה הנדרש');
+    const arr = Array.isArray(data) ? data : (data?.questions ?? []);
+    if (!Array.isArray(arr) || !arr.length) throw new Error('questions.json לא במבנה הנדרש');
 
     allQuestions = arr.map(q => ({
       id: Number(q.id),
-      question: String(q.question || '').trim(),
-      answer: String(q.answer || '').trim()
+      question: String(q.question ?? '').trim(),
+      answer: String(q.answer ?? '').trim()
     }));
 
     const savedTerm = localStorage.getItem(STORAGE_TERM) || '';
@@ -63,7 +59,7 @@ async function loadQuestions(){
   }
 }
 
-// === Render
+// == Render
 function render(){
   if (!filtered.length){
     questionText.textContent = 'אין תוצאות.';
@@ -90,7 +86,7 @@ function persist(){
   localStorage.setItem(STORAGE_TERM, searchInput.value.trim());
 }
 
-// === Actions
+// == Actions
 function next(){ if(!filtered.length) return; index = (index + 1) % filtered.length; render(); }
 function prev(){ if(!filtered.length) return; index = (index - 1 + filtered.length) % filtered.length; render(); }
 
@@ -104,9 +100,9 @@ function runFilter(term){
 }
 function runSearch(){ filtered = runFilter(searchInput.value); index = 0; render(); }
 
-// === Keyboard nav (מכבד שדות קלט)
+// == Keyboard nav (לא מפריע להקלדה בשדות)
 document.addEventListener('keydown', (e) => {
-  const tag = (document.activeElement && document.activeElement.tagName) || '';
+  const tag = (document.activeElement?.tagName) || '';
   const typing = tag === 'INPUT' || tag === 'TEXTAREA';
   if (typing) return;
 
@@ -114,13 +110,13 @@ document.addEventListener('keydown', (e) => {
   if (e.key === 'ArrowLeft') prev();
 });
 
-// === Events
+// == Events
 nextBtn.addEventListener('click', next);
 prevBtn.addEventListener('click', prev);
 searchBtn.addEventListener('click', runSearch);
 searchInput.addEventListener('keydown', (e)=>{ if(e.key==='Enter') runSearch(); });
 
-// === Chat helpers
+// == Chat helpers
 function addMsg(text, who='bot'){
   const wrap = document.createElement('div');
   wrap.className = 'msg ' + (who==='user' ? 'user' : 'bot');
@@ -131,12 +127,21 @@ function addMsg(text, who='bot'){
   chatMessages.scrollTop = chatMessages.scrollHeight;
 }
 
+// == Gemini: בוט חכם, זורם וענייני בלבד
 async function askGemini(prompt){
-  const system = 'אתה עוזר תמציתי לחוקת אוויר. ענה בעברית, קצר ומדויק. אם השאלה לא קשורה לחוקה — ציין שאינך עונה.';
+  const system = [
+    'דבר בעברית טבעית וברורה.',
+    'ענה עניינית בלבד: קצר כשאפשר, מפורט כשנדרש.',
+    'אם חסר מידע לשאלה — שאל הבהרה אחת קצרה לפני תשובה.',
+    'אל תמציא עובדות; אם אינך בטוח, אמור שאינך בטוח.',
+    'השתמש בסעיפים/דוגמאות קצרות כשזה מבהיר.',
+  ].join(' ');
+
   const body = { contents:[
     { role:'user', parts:[{ text: system }] },
     { role:'user', parts:[{ text: prompt }] }
   ]};
+
   const res = await fetch(GEMINI_ENDPOINT,{
     method:'POST',
     headers:{ 'Content-Type':'application/json' },
@@ -147,19 +152,12 @@ async function askGemini(prompt){
     throw new Error('שגיאה מה-Gemini: ' + res.status + ' ' + t);
   }
   const data = await res.json();
-  const cand = data?.candidates?.[0]?.content?.parts?.[0]?.text || 'לא התקבלה תשובה.';
-  return cand;
+  return data?.candidates?.[0]?.content?.parts?.[0]?.text || 'לא התקבלה תשובה.';
 }
 
-// === Chat open/close (FAB)
-function openChat(){
-  chatWindow.style.display = 'flex';
-  chatWindow.setAttribute('aria-hidden','false');
-}
-function closeChat(){
-  chatWindow.style.display = 'none';
-  chatWindow.setAttribute('aria-hidden','true');
-}
+// == Chat open/close (FAB)
+function openChat(){ chatWindow.style.display = 'flex'; chatWindow.setAttribute('aria-hidden','false'); }
+function closeChat(){ chatWindow.style.display = 'none'; chatWindow.setAttribute('aria-hidden','true'); }
 fabBtn.addEventListener('click', openChat);
 chatClose.addEventListener('click', closeChat);
 
