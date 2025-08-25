@@ -14,6 +14,14 @@ const progressBar  = document.getElementById('progressBar');
 const questionCounter = document.getElementById('questionCounter');
 const searchInput  = document.getElementById('searchInput');
 const searchBtn    = document.getElementById('searchBtn');
+const pageInput    = document.getElementById('pageInput');
+const goToBtn      = document.getElementById('goToBtn');
+
+// Explanation elements
+const explanationBtn = document.getElementById('explanationBtn');
+const explanationDiv = document.getElementById('explanation');
+const explanationText = document.getElementById('explanationText');
+const explanationSource = document.getElementById('explanationSource');
 
 // Chat
 const fabBtn       = document.getElementById('chatBtn');
@@ -42,7 +50,9 @@ async function loadQuestions(){
     allQuestions = arr.map(q => ({
       id: Number(q.id),
       question: String(q.question ?? '').trim(),
-      answer: String(q.answer ?? '').trim()
+      answer: String(q.answer ?? '').trim(),
+      explanation: String(q.explanation ?? '').trim(),
+      source: String(q.source ?? '').trim()
     }));
 
     const savedTerm = localStorage.getItem(STORAGE_TERM) || '';
@@ -64,12 +74,17 @@ function render(){
   if (!filtered.length){
     questionText.textContent = 'אין תוצאות.';
     answerText.textContent = '';
+    hideExplanation();
     updateProgress();
     return;
   }
   const q = filtered[index];
   questionText.textContent = q.question;
   answerText.textContent   = q.answer;
+  
+  // Hide explanation when moving to new question
+  hideExplanation();
+  
   updateProgress();
   persist();
 }
@@ -79,6 +94,10 @@ function updateProgress(){
   const pos = total ? index + 1 : 0;
   questionCounter.textContent = `שאלה ${pos} מתוך ${total}`;
   progressBar.style.width = (total ? (pos/total*100) : 0) + '%';
+  
+  // Update page input max value
+  pageInput.max = total;
+  pageInput.placeholder = total ? `1-${total}` : 'מספר';
 }
 
 function persist(){
@@ -86,9 +105,61 @@ function persist(){
   localStorage.setItem(STORAGE_TERM, searchInput.value.trim());
 }
 
+// == Page navigation
+function goToPage(){
+  if (!filtered.length) return;
+  
+  const pageNum = parseInt(pageInput.value);
+  if (!pageNum || pageNum < 1 || pageNum > filtered.length) {
+    pageInput.value = '';
+    return;
+  }
+  
+  index = pageNum - 1;
+  pageInput.value = '';
+  render();
+}
+
+// == Explanation functions
+function toggleExplanation(){
+  if (explanationDiv.classList.contains('show')) {
+    hideExplanation();
+  } else {
+    showExplanation();
+  }
+}
+
+function showExplanation(){
+  if (!filtered.length) return;
+  
+  const q = filtered[index];
+  const explanation = q.explanation || 'אין הסבר זמין לשאלה זו.';
+  const source = q.source || '';
+  
+  explanationText.textContent = explanation;
+  explanationSource.textContent = source ? `מקור: ${source}` : '';
+  
+  explanationDiv.classList.add('show');
+  explanationBtn.textContent = 'הסתר הסבר';
+}
+
+function hideExplanation(){
+  explanationDiv.classList.remove('show');
+  explanationBtn.textContent = 'הסבר';
+}
+
 // == Actions
-function next(){ if(!filtered.length) return; index = (index + 1) % filtered.length; render(); }
-function prev(){ if(!filtered.length) return; index = (index - 1 + filtered.length) % filtered.length; render(); }
+function next(){ 
+  if(!filtered.length) return; 
+  index = (index + 1) % filtered.length; 
+  render(); 
+}
+
+function prev(){ 
+  if(!filtered.length) return; 
+  index = (index - 1 + filtered.length) % filtered.length; 
+  render(); 
+}
 
 function runFilter(term){
   const t = term.trim().toLowerCase();
@@ -115,6 +186,9 @@ nextBtn.addEventListener('click', next);
 prevBtn.addEventListener('click', prev);
 searchBtn.addEventListener('click', runSearch);
 searchInput.addEventListener('keydown', (e)=>{ if(e.key==='Enter') runSearch(); });
+explanationBtn.addEventListener('click', toggleExplanation);
+goToBtn.addEventListener('click', goToPage);
+pageInput.addEventListener('keydown', (e)=>{ if(e.key==='Enter') goToPage(); });
 
 // == Chat helpers
 function addMsg(text, who='bot'){
