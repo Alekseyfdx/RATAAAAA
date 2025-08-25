@@ -1,22 +1,23 @@
-// === הגדרות ===
+// === מקור הנתונים (JSON פשוט: [{id,question,answer}])
 const DATA_URL = 'questions.json';
 
-// API KEY שסיפקת (שים לב: בצד-לקוח זה גלוי. לשימוש מאובטח – פרוקסי שרת).
+// ⚠️ API Key בצד-לקוח הוא גלוי. לפרודקשן רצוי פרוקסי-שרת.
 const API_KEY = 'AIzaSyBx3oPlQMWCjYglP0ENvWK_7uGJbh6aYqs';
 const GEMINI_ENDPOINT = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${API_KEY}`;
 
-// אלמנטים
+// DOM
 const questionText = document.getElementById('questionText');
 const answerText   = document.getElementById('answerText');
 const prevBtn      = document.getElementById('prevBtn');
 const nextBtn      = document.getElementById('nextBtn');
 const progressBar  = document.getElementById('progressBar');
 const questionCounter = document.getElementById('questionCounter');
+
 const searchInput  = document.getElementById('searchInput');
 const searchBtn    = document.getElementById('searchBtn');
 
 // Chat
-const chatBtn      = document.getElementById('chatBtn');
+const fabBtn       = document.getElementById('chatBtn');
 const chatWindow   = document.getElementById('chatWindow');
 const chatClose    = document.getElementById('chatClose');
 const chatMessages = document.getElementById('chatMessages');
@@ -24,44 +25,47 @@ const chatInput    = document.getElementById('chatInput');
 const chatSend     = document.getElementById('chatSend');
 const loadingSpinner = document.getElementById('loadingSpinner');
 
-// מצב
+// State
 let allQuestions = [];
 let filtered = [];
 let index = 0;
-const STORAGE_KEY  = 'pilot_theory_index';
-const STORAGE_TERM = 'pilot_theory_term';
 
-// === טעינת שאלות ===
-async function loadQuestions() {
-  try {
+const STORAGE_INDEX = 'pilot_theory_index';
+const STORAGE_TERM  = 'pilot_theory_term';
+
+// === Load
+async function loadQuestions(){
+  try{
     const res = await fetch(DATA_URL);
     const data = await res.json();
-    if (!data || !Array.isArray(data.questions)) throw new Error('questions.json לא במבנה הנדרש');
 
-    allQuestions = data.questions.map(q => ({
+    // תמיכה בשני מבנים: {questions:[...]} או מערך ישירות
+    const arr = Array.isArray(data) ? data : (data && Array.isArray(data.questions) ? data.questions : []);
+    if (!arr.length) throw new Error('questions.json לא במבנה הנדרש');
+
+    allQuestions = arr.map(q => ({
       id: Number(q.id),
       question: String(q.question || '').trim(),
       answer: String(q.answer || '').trim()
     }));
 
-    // שחזור חיפוש והתקדמות
     const savedTerm = localStorage.getItem(STORAGE_TERM) || '';
     filtered = savedTerm ? runFilter(savedTerm) : allQuestions;
     if (savedTerm) searchInput.value = savedTerm;
 
-    const saved = Number(localStorage.getItem(STORAGE_KEY));
-    index = Number.isFinite(saved) && saved >= 0 && saved < filtered.length ? saved : 0;
+    const savedIdx = Number(localStorage.getItem(STORAGE_INDEX));
+    index = Number.isFinite(savedIdx) && savedIdx >= 0 && savedIdx < filtered.length ? savedIdx : 0;
 
     render();
-  } catch (e) {
-    console.error(e);
+  }catch(err){
+    console.error(err);
     questionText.textContent = 'שגיאה בטעינת השאלות (questions.json).';
   }
 }
 
-// === תצוגה ===
-function render() {
-  if (!filtered.length) {
+// === Render
+function render(){
+  if (!filtered.length){
     questionText.textContent = 'אין תוצאות.';
     answerText.textContent = '';
     updateProgress();
@@ -69,38 +73,28 @@ function render() {
   }
   const q = filtered[index];
   questionText.textContent = q.question;
-  answerText.textContent = q.answer;   // מוצג תמיד
+  answerText.textContent   = q.answer;
   updateProgress();
   persist();
 }
 
-function updateProgress() {
+function updateProgress(){
   const total = filtered.length;
   const pos = total ? index + 1 : 0;
   questionCounter.textContent = `שאלה ${pos} מתוך ${total}`;
-  const pct = total ? (pos / total) * 100 : 0;
-  progressBar.style.width = pct + '%';
+  progressBar.style.width = (total ? (pos/total*100) : 0) + '%';
 }
 
-function persist() {
-  localStorage.setItem(STORAGE_KEY, String(index));
+function persist(){
+  localStorage.setItem(STORAGE_INDEX, String(index));
   localStorage.setItem(STORAGE_TERM, searchInput.value.trim());
 }
 
-// === פעולות ניווט ===
-function next() {
-  if (!filtered.length) return;
-  index = (index + 1) % filtered.length;
-  render();
-}
-function prev() {
-  if (!filtered.length) return;
-  index = (index - 1 + filtered.length) % filtered.length;
-  render();
-}
+// === Actions
+function next(){ if(!filtered.length) return; index = (index + 1) % filtered.length; render(); }
+function prev(){ if(!filtered.length) return; index = (index - 1 + filtered.length) % filtered.length; render(); }
 
-// === חיפוש ===
-function runFilter(term) {
+function runFilter(term){
   const t = term.trim().toLowerCase();
   if (!t) return allQuestions;
   return allQuestions.filter(q =>
@@ -108,90 +102,85 @@ function runFilter(term) {
     q.answer.toLowerCase().includes(t)
   );
 }
-function runSearch() {
-  filtered = runFilter(searchInput.value);
-  index = 0;
-  render();
-}
+function runSearch(){ filtered = runFilter(searchInput.value); index = 0; render(); }
 
-// === מקשים ===
+// === Keyboard nav (מכבד שדות קלט)
 document.addEventListener('keydown', (e) => {
   const tag = (document.activeElement && document.activeElement.tagName) || '';
   const typing = tag === 'INPUT' || tag === 'TEXTAREA';
-  if (typing) return; // לא לשבור הקלדה
+  if (typing) return;
 
   if (e.key === 'ArrowRight' || e.key === 'Enter' || e.key === ' ') next();
   if (e.key === 'ArrowLeft') prev();
 });
 
-// === אירועים ===
+// === Events
 nextBtn.addEventListener('click', next);
 prevBtn.addEventListener('click', prev);
 searchBtn.addEventListener('click', runSearch);
-searchInput.addEventListener('keydown', (e) => { if (e.key === 'Enter') runSearch(); });
+searchInput.addEventListener('keydown', (e)=>{ if(e.key==='Enter') runSearch(); });
 
-// === צ'אט (Gemini 2.0 Flash) ===
-function addMsg(text, who='bot') {
+// === Chat helpers
+function addMsg(text, who='bot'){
   const wrap = document.createElement('div');
-  wrap.className = 'chat-message ' + (who === 'user' ? 'user-message' : 'bot-message');
-  const av = document.createElement('div');
-  av.className = 'message-avatar';
-  av.textContent = (who === 'user') ? '👨' : '🤖';
-  const content = document.createElement('div');
-  content.className = 'message-content';
-  content.textContent = text;
-  wrap.appendChild(av); wrap.appendChild(content);
+  wrap.className = 'msg ' + (who==='user' ? 'user' : 'bot');
+  const av = document.createElement('div'); av.className = 'avatar'; av.textContent = who==='user' ? '👤' : '🤖';
+  const bubble = document.createElement('div'); bubble.className = 'bubble'; bubble.textContent = text;
+  wrap.appendChild(av); wrap.appendChild(bubble);
   chatMessages.appendChild(wrap);
   chatMessages.scrollTop = chatMessages.scrollHeight;
 }
 
-async function askGemini(prompt) {
-  const system = 'אתה עוזר תכליתי לתלמידי חוקת אוויר. ענה בקצרה ובדיוק, רק בנושאי חוקה/תקנות טיסה. אם השאלה אינה רלוונטית – כתוב שאינך יכול לענות.';
-  const body = {
-    contents: [
-      { role: 'user', parts: [{ text: system }] },
-      { role: 'user', parts: [{ text: prompt }] }
-    ]
-  };
-  const res = await fetch(GEMINI_ENDPOINT, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
+async function askGemini(prompt){
+  const system = 'אתה עוזר תמציתי לחוקת אוויר. ענה בעברית, קצר ומדויק. אם השאלה לא קשורה לחוקה — ציין שאינך עונה.';
+  const body = { contents:[
+    { role:'user', parts:[{ text: system }] },
+    { role:'user', parts:[{ text: prompt }] }
+  ]};
+  const res = await fetch(GEMINI_ENDPOINT,{
+    method:'POST',
+    headers:{ 'Content-Type':'application/json' },
     body: JSON.stringify(body)
   });
-  if (!res.ok) {
+  if(!res.ok){
     const t = await res.text().catch(()=> '');
     throw new Error('שגיאה מה-Gemini: ' + res.status + ' ' + t);
   }
   const data = await res.json();
-  const candidates = (data && data.candidates) || [];
-  const txt = candidates.length && candidates[0].content && candidates[0].content.parts && candidates[0].content.parts[0].text
-    ? candidates[0].content.parts[0].text
-    : 'לא התקבלה תשובה.';
-  return txt;
+  const cand = data?.candidates?.[0]?.content?.parts?.[0]?.text || 'לא התקבלה תשובה.';
+  return cand;
 }
-function openChat() { chatWindow.style.display = 'flex'; chatWindow.setAttribute('aria-hidden', 'false'); }
-function closeChat() { chatWindow.style.display = 'none'; chatWindow.setAttribute('aria-hidden', 'true'); }
 
-chatBtn.addEventListener('click', openChat);
+// === Chat open/close (FAB)
+function openChat(){
+  chatWindow.style.display = 'flex';
+  chatWindow.setAttribute('aria-hidden','false');
+}
+function closeChat(){
+  chatWindow.style.display = 'none';
+  chatWindow.setAttribute('aria-hidden','true');
+}
+fabBtn.addEventListener('click', openChat);
 chatClose.addEventListener('click', closeChat);
 
-async function sendChat() {
+// שליחה
+async function sendChat(){
   const text = chatInput.value.trim();
-  if (!text) return;
-  addMsg(text, 'user');
+  if(!text) return;
+  addMsg(text,'user');
   chatInput.value = '';
-  loadingSpinner.style.display = 'block';
-  try {
+  loadingSpinner.hidden = false;
+  try{
     const reply = await askGemini(text);
-    addMsg(reply, 'bot');
-  } catch (err) {
-    addMsg(err.message || 'שגיאה.', 'bot');
-  } finally {
-    loadingSpinner.style.display = 'none';
+    addMsg(reply,'bot');
+  }catch(err){
+    addMsg(err.message || 'שגיאה.','bot');
+  }finally{
+    loadingSpinner.hidden = true;
   }
 }
 chatSend.addEventListener('click', sendChat);
-chatInput.addEventListener('keydown', (e)=>{ if (e.key === 'Enter') sendChat(); });
+chatInput.addEventListener('keydown',(e)=>{ if(e.key==='Enter') sendChat(); });
 
-// התחלה
+// Start
 loadQuestions();
