@@ -1,7 +1,7 @@
 // === הגדרות ===
 const DATA_URL = 'questions.json';
 
-// API KEY שסיפקת
+// API KEY שסיפקת (שים לב: בצד-לקוח זה גלוי. לשימוש מאובטח – פרוקסי שרת).
 const API_KEY = 'AIzaSyBx3oPlQMWCjYglP0ENvWK_7uGJbh6aYqs';
 const GEMINI_ENDPOINT = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${API_KEY}`;
 
@@ -28,7 +28,7 @@ const loadingSpinner = document.getElementById('loadingSpinner');
 let allQuestions = [];
 let filtered = [];
 let index = 0;
-const STORAGE_KEY = 'pilot_theory_index';
+const STORAGE_KEY  = 'pilot_theory_index';
 const STORAGE_TERM = 'pilot_theory_term';
 
 // === טעינת שאלות ===
@@ -37,21 +37,21 @@ async function loadQuestions() {
     const res = await fetch(DATA_URL);
     const data = await res.json();
     if (!data || !Array.isArray(data.questions)) throw new Error('questions.json לא במבנה הנדרש');
+
     allQuestions = data.questions.map(q => ({
       id: Number(q.id),
       question: String(q.question || '').trim(),
       answer: String(q.answer || '').trim()
     }));
-    // שחזור התקדמות
+
+    // שחזור חיפוש והתקדמות
     const savedTerm = localStorage.getItem(STORAGE_TERM) || '';
-    if (savedTerm) {
-      searchInput.value = savedTerm;
-      filtered = runFilter(savedTerm);
-    } else {
-      filtered = allQuestions;
-    }
+    filtered = savedTerm ? runFilter(savedTerm) : allQuestions;
+    if (savedTerm) searchInput.value = savedTerm;
+
     const saved = Number(localStorage.getItem(STORAGE_KEY));
     index = Number.isFinite(saved) && saved >= 0 && saved < filtered.length ? saved : 0;
+
     render();
   } catch (e) {
     console.error(e);
@@ -69,7 +69,7 @@ function render() {
   }
   const q = filtered[index];
   questionText.textContent = q.question;
-  answerText.textContent = q.answer; // מוצג תמיד
+  answerText.textContent = q.answer;   // מוצג תמיד
   updateProgress();
   persist();
 }
@@ -87,7 +87,7 @@ function persist() {
   localStorage.setItem(STORAGE_TERM, searchInput.value.trim());
 }
 
-// === פעולות ===
+// === פעולות ניווט ===
 function next() {
   if (!filtered.length) return;
   index = (index + 1) % filtered.length;
@@ -116,6 +116,10 @@ function runSearch() {
 
 // === מקשים ===
 document.addEventListener('keydown', (e) => {
+  const tag = (document.activeElement && document.activeElement.tagName) || '';
+  const typing = tag === 'INPUT' || tag === 'TEXTAREA';
+  if (typing) return; // לא לשבור הקלדה
+
   if (e.key === 'ArrowRight' || e.key === 'Enter' || e.key === ' ') next();
   if (e.key === 'ArrowLeft') prev();
 });
@@ -165,7 +169,6 @@ async function askGemini(prompt) {
     : 'לא התקבלה תשובה.';
   return txt;
 }
-
 function openChat() { chatWindow.style.display = 'flex'; chatWindow.setAttribute('aria-hidden', 'false'); }
 function closeChat() { chatWindow.style.display = 'none'; chatWindow.setAttribute('aria-hidden', 'true'); }
 
