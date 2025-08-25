@@ -1,27 +1,20 @@
-/* ===== בסיס / ערכות צבע ===== */
+/* ===== צבעים וסגנון כללי ===== */
 :root{
-  --bg1:#0f172a;        /* slate-900 */
-  --bg2:#1e293b;        /* slate-800 */
-  --grad1:#6d28d9;      /* violet-700 */
-  --grad2:#0ea5e9;      /* sky-500 */
+  --bg1:#0f172a; --bg2:#1e293b;
+  --grad1:#6d28d9; --grad2:#0ea5e9;
+  --text:#eef2ff; --muted:#cbd5e1;
+  --primary:#3b82f6; --primary-600:#2563eb;
+  --outline:#334155; --success:#10b981;
   --card-bg: rgba(255,255,255,.08);
   --card-border: rgba(255,255,255,.18);
-  --text:#eef2ff;       /* indigo-50 */
-  --muted:#cbd5e1;      /* slate-300 */
-  --primary:#3b82f6;    /* blue-500 */
-  --primary-600:#2563eb;
-  --outline:#334155;
-  --success:#10b981;
   --shadow: 0 15px 35px rgba(0,0,0,.25);
   --radius:16px;
 }
-
 *{box-sizing:border-box}
 html,body{height:100%}
 body{
-  margin:0;
+  margin:0; color:var(--text);
   font-family:'Rubik',system-ui,-apple-system,'Segoe UI',Arial,sans-serif;
-  color:var(--text);
   background:
     radial-gradient(1200px 800px at 10% 0%, rgba(110,36,210,.35), transparent 60%),
     radial-gradient(1000px 800px at 100% 100%, rgba(14,165,233,.35), transparent 60%),
@@ -38,11 +31,8 @@ body{
   background:linear-gradient(to bottom, rgba(15,23,42,.85), rgba(15,23,42,.6));
   border-bottom:1px solid var(--outline);
 }
-.header-content{
-  display:flex; align-items:center; justify-content:space-between;
-  padding:14px 0;
-}
-.brand{ display:flex; gap:10px; align-items:center; }
+.header-content{ display:flex; align-items:center; justify-content:space-between; padding:14px 0 }
+.brand{ display:flex; gap:10px; align-items:center }
 .brand-logo{ font-size:1.25rem }
 .brand-text{ font-weight:700; letter-spacing:.3px }
 .counter{ color:var(--muted); font-size:.95rem }
@@ -51,11 +41,10 @@ body{
 .app-main{ padding:24px 0 36px; display:flex; flex-direction:column; gap:16px }
 
 /* ===== חיפוש ===== */
-.search{ display:flex; gap:10px; }
+.search{ display:flex; gap:10px }
 .search input{
   flex:1; background:rgba(255,255,255,.06); color:var(--text);
   border:1px solid var(--outline); border-radius:12px; padding:12px 14px;
-  outline:none;
 }
 .search input::placeholder{ color:#94a3b8 }
 .btn{
@@ -64,58 +53,31 @@ body{
 }
 .btn:active{ transform:translateY(1px) }
 .btn-primary{ background:linear-gradient(135deg,var(--primary),var(--primary-600)); color:#fff; box-shadow:0 8px 20px rgba(37,99,235,.35) }
-.btn-outline{
-  background:transparent; color:#fff; border:1px solid var(--outline);
-}
+.btn-outline{ background:transparent; color:#fff; border:1px solid var(--outline) }
 
 /* ===== כרטיס ===== */
-.card{
-  border-radius:var(--radius);
-  padding:22px 18px;
-  box-shadow:var(--shadow);
-}
-.glass{
-  background:var(--card-bg);
-  border:1px solid var(--card-border);
-  backdrop-filter: blur(14px) saturate(140%);
-}
-.question{
-  font-size:1.35rem; line-height:1.6; margin:0 0 14px 0;
-}
+.card{ border-radius:var(--radius); padding:22px 18px; box-shadow:var(--shadow) }
+.glass{ background:var(--card-bg); border:1px solid var(--card-border); backdrop-filter: blur(14px) saturate(140%) }
+.question{ font-size:1.35rem; line-height:1.6; margin:0 0 14px }
 .answer{
-  background:rgba(255,255,255,.07);
-  border:1px dashed rgba(255,255,255,.25);
-  border-radius:14px;
-  padding:14px 12px;
-  color:#e2e8f0;
-  box-shadow: inset 0 1px 6px rgba(0,0,0,.12);
+  background:rgba(255,255,255,.07); border:1px dashed rgba(255,255,255,.25);
+  border-radius:14px; padding:14px 12px; color:#e2e8f0; box-shadow: inset 0 1px 6px rgba(0,0,0,.12);
 }
 
-/* ===== ניווט ===== */
+/* ===== ניווט והתּקדמות ===== */
 .nav-row{ display:flex; gap:12px }
 .nav-row .btn{ flex:1 }
-
-/* ===== התקדמות ===== */
 .progress-wrap{
   width:100%; height:6px; background:rgba(255,255,255,.1);
   border-radius:100px; overflow:hidden; border:1px solid rgba(255,255,255,.12)
 }
-.progress{
-  height:100%;
-  background:linear-gradient(90deg, var(--success), #22d3ee);
-  width:0;
-  transition:width .35s cubic-bezier(.2,.7,.25,1);
-}
+.progress{ height:100%; background:linear-gradient(90deg, var(--success), #22d3ee); width:0; transition:width .35s cubic-bezier(.2,.7,.25,1) }
 
 /* ===== תחתית ===== */
-.app-footer{
-  border-top:1px solid var(--outline);
-  padding:18px 0;
-  background:linear-gradient(to top, rgba(15,23,42,.9), rgba(15,23,42,.6));
-}
+.app-footer{ border-top:1px solid var(--outline); padding:18px 0; background:linear-gradient(to top, rgba(15,23,42,.9), rgba(15,23,42,.6)) }
 .app-footer p{ margin:0; color:#9ca3af }
 
-/* ===== FAB (כפתור צ'אט צף) ===== */
+/* ===== FAB (כפתור צ'אט עגול) ===== */
 .fab{
   position:fixed; right:22px; bottom:22px; z-index:50;
   width:56px; height:56px; border-radius:50%;
@@ -124,9 +86,7 @@ body{
   border:0; cursor:pointer; box-shadow:0 14px 30px rgba(37,99,235,.35);
   font-size:1.35rem;
 }
-
-/* לשים משמאל במקום מימין: */
-/* .fab{ right:auto; left:22px; } */
+/* לשים משמאל: .fab{ right:auto; left:22px } */
 
 /* ===== חלון צ'אט ===== */
 .chat{
@@ -137,38 +97,18 @@ body{
   background:linear-gradient(180deg, rgba(17,24,39,.98), rgba(17,24,39,.92));
   border:1px solid var(--card-border);
 }
-.chat-head{
-  display:flex; align-items:center; justify-content:space-between;
-  padding:10px 12px; border-bottom:1px solid var(--outline);
-}
+.chat-head{ display:flex; align-items:center; justify-content:space-between; padding:10px 12px; border-bottom:1px solid var(--outline) }
 .chat-title{ font-weight:700 }
-.icon-btn{
-  background:transparent; color:#e5e7eb; border:0; font-size:1.2rem; cursor:pointer;
-}
-.chat-body{
-  padding:12px; overflow:auto; display:flex; flex-direction:column; gap:8px;
-}
+.icon-btn{ background:transparent; color:#e5e7eb; border:0; font-size:1.2rem; cursor:pointer }
+.chat-body{ padding:12px; overflow:auto; display:flex; flex-direction:column; gap:8px }
 .msg{ display:flex; gap:8px; align-items:flex-start }
 .avatar{ width:26px; height:26px; display:grid; place-items:center; background:#0b1220; border:1px solid var(--outline); border-radius:50% }
-.bubble{
-  background:rgba(255,255,255,.08); border:1px solid rgba(255,255,255,.15);
-  padding:8px 10px; border-radius:12px;
-}
+.bubble{ background:rgba(255,255,255,.08); border:1px solid rgba(255,255,255,.15); padding:8px 10px; border-radius:12px }
 .msg.user .bubble{ background:rgba(59,130,246,.15); border-color:rgba(59,130,246,.35) }
-
-.chat-input{
-  display:flex; gap:8px; padding:10px 12px; border-top:1px solid var(--outline);
-  background:rgba(2,6,23,.6);
-}
-.chat-input input{
-  flex:1; background:rgba(255,255,255,.06); color:#fff;
-  border:1px solid var(--outline); border-radius:10px; padding:10px 12px; outline:none;
-}
+.chat-input{ display:flex; gap:8px; padding:10px 12px; border-top:1px solid var(--outline); background:rgba(2,6,23,.6) }
+.chat-input input{ flex:1; background:rgba(255,255,255,.06); color:#fff; border:1px solid var(--outline); border-radius:10px; padding:10px 12px }
 .btn-send{ padding:10px 14px }
-
-.chat-loading{
-  padding:8px 12px; color:#cbd5e1; border-top:1px dashed var(--outline);
-}
+.chat-loading{ padding:8px 12px; color:#cbd5e1; border-top:1px dashed var(--outline) }
 
 /* ===== מובייל ===== */
 @media (max-width: 640px){
@@ -177,9 +117,6 @@ body{
   .nav-row{ flex-direction:column }
   .card{ padding:18px 14px }
   .question{ font-size:1.15rem }
-  .chat{ width:92vw; right:4vw; bottom:86px }
-  .fab{ right:14px; bottom:14px }
-  /* לשמאל במובייל:
-     .chat{ left:4vw; right:auto }
-     .fab{ left:14px; right:auto } */
+  .chat{ width:92vw; right:4vw; bottom:86px } /* לשמאל: left:4vw; right:auto */
+  .fab{ right:14px; bottom:14px }             /* לשמאל: left:14px; right:auto */
 }
