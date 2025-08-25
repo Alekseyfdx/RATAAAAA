@@ -1,144 +1,132 @@
+/* ===== בסיס כללי ===== */
+* { box-sizing: border-box; }
+html, body { height: 100%; }
 body {
-    font-family: 'Rubik', sans-serif;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    min-height: 100vh;
-    direction: rtl;
-    color: #222;
+  font-family: 'Rubik', system-ui, -apple-system, Segoe UI, Arial, sans-serif;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: #222;
+  direction: rtl;
+  margin: 0;
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+  word-break: break-word;
 }
 
+/* ===== כותרת ===== */
 .app-header {
-    background-color: #1a365d;
-    color: #fff;
-    padding: 1rem;
-    box-shadow: 0 4px 6px rgba(0,0,0,0.08);
+  background-color: #1a365d;
+  color: #fff;
+  padding: 12px 16px;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.08);
 }
-
 .header-content {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    max-width: 800px;
-    margin: 0 auto;
+  display: flex; justify-content: space-between; align-items: center;
+  max-width: 960px; margin: 0 auto;
 }
+.logo { font-size: 1.1rem; font-weight: 700; }
 
-.logo {
-    font-size: 1.3rem;
-    font-weight: bold;
-}
-
+/* ===== מכולה ===== */
 .app-container {
-    max-width: 800px;
-    margin: 0 auto;
-    padding: 2rem 1rem;
-    display: flex;
-    flex-direction: column;
-    gap: 1.5rem;
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
 }
 
-.controls-bar {
-    display: flex;
-    gap: 0.5rem;
-}
-
+/* ===== חיפוש ===== */
+.controls-bar { display:flex; gap:10px; }
 .search-input {
-    flex: 1;
-    padding: 0.7rem;
-    border-radius: 8px;
-    border: 1px solid #c3c3c3;
-    font-size: 1rem;
+  flex: 1; padding: 12px 14px; border-radius: 12px;
+  border: 1px solid #cbd5e1; font-size: 1rem; background:#fff;
 }
-
 .search-btn {
-    padding: 0.7rem 1.5rem;
-    background: #2563eb;
-    color: #fff;
-    border: none;
-    border-radius: 8px;
-    cursor: pointer;
+  padding: 12px 18px; background:#2563eb; color:#fff;
+  border:0; border-radius:12px; cursor:pointer; font-weight:700;
 }
 
+/* ===== כרטיס שאלה ===== */
 .question-card {
-    background: #fff;
-    border-radius: 12px;
-    padding: 2rem;
-    box-shadow: 0 4px 16px rgba(30, 40, 70, 0.06);
-    text-align: center;
+  background:#fff;
+  border-radius: 16px;
+  padding: 22px 18px;
+  box-shadow: 0 8px 24px rgba(17,24,39,.08);
 }
-
 .question-text {
-    font-size: 1.3rem;
-    font-weight: 500;
-    min-height: 64px;
+  font-size: 1.2rem;
+  line-height: 1.5;
+  margin-bottom: 12px;
 }
-
-.toggle-answer-btn {
-    margin: 1rem 0 0.5rem 0;
-    background: #10b981;
-    color: #fff;
-    border: none;
-    border-radius: 999px;
-    padding: 0.7rem 2rem;
-    font-size: 1rem;
-    cursor: pointer;
-}
-
 .answer-card {
-    background: #f6f9fb;
-    border-radius: 8px;
-    padding: 1.2rem 0.8rem;
-    margin-top: 0.7rem;
-    font-size: 1.07rem;
-    color: #6b7280;
-    box-shadow: 0 1px 6px rgba(30, 40, 70, 0.08);
+  background:#f6f9fb;
+  border-radius: 12px;
+  padding: 14px 12px;
+  font-size: 1.05rem;
+  color:#374151;
+  box-shadow:0 1px 6px rgba(30,40,70,.08);
 }
 
-.navigation-buttons {
-    display: flex;
-    gap: 1rem;
-    justify-content: space-between;
-}
-
+/* ===== ניווט ===== */
+.navigation-buttons { display:flex; gap:12px; }
 .nav-btn {
-    flex: 1;
-    padding: 1rem 0;
-    background: #2563eb;
-    color: #fff;
-    border: none;
-    border-radius: 8px;
-    font-size: 1rem;
-    cursor: pointer;
-    font-weight: bold;
-    transition: background 0.2s;
+  flex:1; padding:14px 0; background:#2563eb; color:#fff; border:0; border-radius:12px;
+  font-size:1rem; font-weight:700; cursor:pointer; transition:filter .15s ease;
 }
-.nav-btn:hover {
-    background: #1a365d;
-}
+.nav-btn:hover { filter:brightness(.93); }
 
-#randomBtn {
-    background: #f59e0b;
-}
-#randomBtn:hover {
-    background: #b45309;
-}
-
+/* ===== התקדמות ===== */
 .progress-bar-container {
-    width: 100%;
-    height: 7px;
-    background: #e5e7eb;
-    border-radius: 4px;
-    overflow: hidden;
-    margin-top: 12px;
+  width:100%; height:7px; background:#e5e7eb; border-radius:6px; overflow:hidden; margin-top:4px;
 }
-.progress-bar {
-    height: 100%;
-    background: #10b981;
-    width: 0;
-    transition: width 0.3s;
+.progress-bar { height:100%; background:#10b981; width:0; transition:width .3s ease; }
+
+/* ===== תחתית ===== */
+.app-footer { background:#1a365d; color:#fff; padding: 16px; text-align:center; }
+
+/* ===== צ'אט ===== */
+.chat-btn {
+  position: fixed; bottom: 18px; left: 18px;
+  width: 56px; height: 56px; border-radius: 50%;
+  border: 0; cursor: pointer; font-size: 1.4rem;
+  background: #2563eb; color: #fff; box-shadow: 0 10px 20px rgba(0,0,0,.2);
+  z-index: 50;
+}
+.chat-window {
+  position: fixed; bottom: 84px; left: 18px; width: 360px;
+  background:#fff; border-radius: 14px; box-shadow: 0 16px 40px rgba(0,0,0,.22);
+  display: none; flex-direction: column; overflow: hidden; z-index: 50;
+}
+.chat-header {
+  background:#1a365d; color:#fff; padding:10px 12px; display:flex; justify-content:space-between; align-items:center;
+}
+.chat-close { background:transparent; border:0; color:#fff; font-size:1.2rem; cursor:pointer; }
+.chat-messages { max-height: 50vh; overflow:auto; padding: 10px 12px; display:flex; flex-direction:column; gap:8px; }
+.chat-message { display:flex; gap:8px; align-items:flex-start; }
+.message-avatar { width:28px; height:28px; display:grid; place-items:center; background:#e5e7eb; border-radius:50%; }
+.message-content { background:#f3f4f6; padding:8px 10px; border-radius:10px; text-align:right; }
+.user-message .message-content { background:#e0ecff; }
+.chat-input-row { display:flex; gap:8px; padding: 10px 12px; border-top:1px solid #e5e7eb; }
+.chat-input-row input { flex:1; padding:10px; border:1px solid #cbd5e1; border-radius:10px; }
+.chat-input-row button { padding:10px 14px; background:#2563eb; color:#fff; border:0; border-radius:10px; cursor:pointer; }
+.loading { padding:8px 12px; color:#6b7280; font-size:.95rem; }
+
+/* ===== מובייל (עד 600px) ===== */
+@media (max-width: 600px) {
+  .app-container { padding: 12px; gap: 12px; }
+  .controls-bar { flex-direction: column; }
+  .search-input, .search-btn { width: 100%; }
+  .question-card { padding: 16px 14px; }
+  .question-text { font-size: 1.05rem; }
+  .answer-card { font-size: 1rem; }
+  .navigation-buttons { flex-direction: column; gap: 8px; }
+  .nav-btn { width: 100%; padding: 14px 0; }
+  .chat-window { width: 92vw; left: 4vw; bottom: 88px; }
+  .chat-messages { max-height: 45vh; }
+  .logo { font-size: 1rem; }
 }
 
-.app-footer {
-    background: #1a365d;
-    color: #fff;
-    padding: 1rem;
-    text-align: center;
+/* חריצים בטוחים לאייפון ועוד */
+@supports(padding:max(0px)) {
+  body { padding-bottom: max(env(safe-area-inset-bottom), 0px); }
 }
