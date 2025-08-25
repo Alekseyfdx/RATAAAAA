@@ -37,8 +37,8 @@
 
     <!-- ניווט -->
     <div class="nav-row">
-      <button id="prevBtn" class="btn btn-outline">קודם</button>
-      <button id="nextBtn" class="btn btn-primary">שאלה הבאה</button>
+      <button id="prevBtn" class="btn btn-outline" title="חזרה (חץ שמאל)">קודם</button>
+      <button id="nextBtn" class="btn btn-primary" title="קדימה (חץ ימין / Enter / רווח)">שאלה הבאה</button>
     </div>
 
     <!-- התקדמות -->
@@ -53,23 +53,23 @@
     </div>
   </footer>
 
-  <!-- FAB Chat -->
+  <!-- FAB: כפתור צ'אט עגול -->
   <button id="chatBtn" class="fab" aria-label="פתח צ'אט">💬</button>
 
   <!-- חלון צ'אט -->
   <div id="chatWindow" class="chat" aria-hidden="true">
     <div class="chat-head">
-      <div class="chat-title">בוט חוקה</div>
+      <div class="chat-title">בוט חכם</div>
       <button id="chatClose" class="icon-btn" aria-label="סגור">✕</button>
     </div>
     <div id="chatMessages" class="chat-body">
       <div class="msg bot">
         <div class="avatar">🤖</div>
-        <div class="bubble">שלום! שאל/י בחוקת אוויר — אענה קצר ומדויק.</div>
+        <div class="bubble">היי! שאל/י כל דבר. אענה עניינית וברורה. אם משהו לא ברור—אשאל הבהרה קצרה.</div>
       </div>
     </div>
     <div class="chat-input">
-      <input id="chatInput" type="text" placeholder="הקלד/י שאלה בחוקה…" />
+      <input id="chatInput" type="text" placeholder="הקלד/י שאלה…" />
       <button id="chatSend" class="btn btn-primary btn-send">שלח</button>
     </div>
     <div id="loadingSpinner" class="chat-loading" hidden>טוען…</div>
